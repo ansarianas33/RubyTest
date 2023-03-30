@@ -13,7 +13,27 @@ document.querySelector(".send-email").onsubmit = function(e) {
     }
   }).then(function(response) {
     if (response.ok) {
-      window.open('/mail', '_blank')
+      // Send email using Action Mailer
+      fetch('/send_email', {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: "recipient@example.com",
+          subject: "Example Email",
+          message: "Hello, World!"
+        })
+      })
+      .then(function(response) {
+        if (response.ok) {
+          window.alert('/mail', '_blank');
+        } else {
+          window.alert("Email failed to send.");
+          console.error(response);
+        }
+      });
     } else {
       console.error(response)
     }
